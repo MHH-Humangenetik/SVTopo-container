@@ -12,12 +12,19 @@ COPY --from=source /SVTopo /SVTopo
 WORKDIR /SVTopo
 RUN cargo install --locked --root /usr/local --path .
 
-FROM python:3.10-alpine AS slim
+FROM ghcr.io/astral-sh/uv:python3.10-alpine AS uv-builder
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=0
 RUN apk add --no-cache clang-dev musl-dev linux-headers g++ gcc zlib-dev make python3-dev jpeg-dev
-COPY --from=rust-builder /usr/local/bin/svtopo /usr/local/bin/svtopo
 COPY --from=source /SVTopo/SVTopoVz /SVTopoVz
 WORKDIR /SVTopoVz
-RUN pip install --no-cache-dir .
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --no-dev --no-editable
+
+FROM python:3.10-alpine AS slim
+RUN apk add --no-cache gcc
+COPY --from=rust-builder /usr/local/bin/svtopo /usr/local/bin/svtopo
+COPY --from=uv-builder /SVTopoVz /SVTopoVz
+ENV PATH="/SVTopoVz/.venv/bin:$PATH"
 WORKDIR /
 
 FROM slim AS nextflow
