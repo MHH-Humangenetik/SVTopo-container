@@ -4,7 +4,7 @@ A lightweight Docker container for [svtopo](https://github.com/PacificBioscience
 
 ## Version
 
-Current version: 1.1.0
+Current version: 0.3.0
 
 ### nextflow
 
@@ -13,7 +13,7 @@ Based on the default, `svtopo` only flavor, there is an additional container ava
 ## Usage
 
 ```bash
-docker run --rm -it ghcr.io/mhh-humangenetik/svtopo:0.1.0 svtopo
+docker run --rm -it ghcr.io/mhh-humangenetik/svtopo:0.3.0 svtopo
 ```
 
 ## License
