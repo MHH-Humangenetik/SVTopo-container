@@ -20,7 +20,7 @@ WORKDIR /SVTopoVz
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --no-dev --no-editable
 
-FROM python:3.10-alpine AS slim
+FROM python:3.14-alpine AS slim
 RUN apk add --no-cache gcc
 COPY --from=rust-builder /usr/local/bin/svtopo /usr/local/bin/svtopo
 COPY --from=uv-builder /SVTopoVz /SVTopoVz
